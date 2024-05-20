@@ -1,0 +1,10 @@
+.footer {
+  color: var(--white);
+  background-color: var(--black);
+  .container {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}

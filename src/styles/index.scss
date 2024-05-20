@@ -1,0 +1,60 @@
+@import './fonts.scss';
+
+:root {
+  // COLORS
+  --primary: #6246ea;
+  --secondary: #e45858;
+  --black: #2b2c34;
+  --white: #fffffe;
+  --gray: #a7a9be;
+  --red: #cc3939;
+  --green: #0d8744;
+  --orange: #e57722;
+
+  // OTHERS
+  --text: #2b2c34;
+  --background: #fffffe;
+  --active: #cccccc25;
+  --boxShadow: 0 3px 6px rgba(25, 30, 36, 0.16), 0 -1px 4px rgba(25, 30, 36, 0.04);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  color: var(--text);
+  background-color: var(--background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: none;
+    border-radius: 6px;
+    background: transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    border-radius: 6px;
+    background: var(--white);
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    -webkit-box-shadow: none;
+    background: var(--gray);
+  }
+  ::-webkit-scrollbar-corner {
+    background: var(--white);
+  }
+  p {
+    margin: 0;
+  }
+  a {
+    color: var(--primary);
+  }
+}
