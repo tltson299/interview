@@ -8,6 +8,7 @@ import { Button, Dialog, Skeleton, Tooltip } from '@mui/material';
 import CurrencyService from 'services/currency_service';
 import { ICompetitor } from 'interfaces/price';
 import { EStar } from 'configs/enums';
+import clsx from 'clsx';
 
 const SKELETON_COUNT = 5;
 
@@ -231,7 +232,7 @@ const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
 
         <div className={classes.hr} />
 
-        <div className={classes.info}>
+        <div className={clsx(classes.info, { [classes.noCompetitors]: !hotelModal?.data?.competitors || !hotelModal?.data?.price })}>
           <div className={classes.address}>
             <AddressIcon />
             <p>{hotelModal?.data?.address ?? 'N/A'}</p>

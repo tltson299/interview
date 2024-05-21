@@ -252,6 +252,9 @@
   }
   .info {
     margin: 24px 0;
+    &.noCompetitors {
+      margin-bottom: 0;
+    }
     .address {
       display: flex;
       align-items: center;
