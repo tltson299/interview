@@ -13,8 +13,10 @@ const SKELETON_COUNT = 5;
 const checkSaving = (currentPrice: number, competitors: ICompetitor) => {
   if (competitors) {
     const maxPrice = Math.max(...Object.values(competitors));
-    const saving = Math.round((1 - currentPrice / maxPrice) * 100);
-    return saving ? <p className={classes.saving}>(Save {saving}%)</p> : null;
+    if (currentPrice < maxPrice) {
+      const saving = Math.round((1 - currentPrice / maxPrice) * 100);
+      return saving ? <p className={classes.saving}>(Save {saving}%)</p> : null;
+    }
   }
   return null;
 };
