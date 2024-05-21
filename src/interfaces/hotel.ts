@@ -1,10 +1,11 @@
+import { EStar } from 'configs/enums';
 import { ICompetitor } from './price';
 
 export interface IHotel {
   id: number;
   name: string;
   rating: number;
-  stars: number;
+  stars: EStar;
   address: string;
   photo: string;
   description: string;
@@ -14,7 +15,7 @@ export interface IExtendedHotel {
   id: number;
   name: string;
   rating: number;
-  stars: number;
+  stars: EStar;
   address: string;
   photo: string;
   description: string;
