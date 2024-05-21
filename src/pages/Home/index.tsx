@@ -10,19 +10,19 @@ import { ICompetitor } from 'interfaces/price';
 
 const SKELETON_COUNT = 5;
 
+const checkSaving = (currentPrice: number, competitors: ICompetitor) => {
+  if (competitors) {
+    const maxPrice = Math.max(...Object.values(competitors));
+    const saving = Math.round((1 - currentPrice / maxPrice) * 100);
+    return saving ? <p className={classes.saving}>(Save {saving}%)</p> : null;
+  }
+  return null;
+};
+
 interface HomePageProps {}
 
 const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
   const information = useAppSelector((state: IRootState) => state.information);
-
-  const checkSaving = (currentPrice: number, competitors: ICompetitor) => {
-    if (competitors) {
-      const maxPrice = Math.max(...Object.values(competitors));
-      const saving = Math.round((1 - currentPrice / maxPrice) * 100);
-      return saving ? <p className={classes.saving}>(Save {saving}%)</p> : null;
-    }
-    return null;
-  };
 
   return (
     <div className={classes.hotelList}>
