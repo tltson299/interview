@@ -3,7 +3,7 @@ import { Fragment, memo, useState } from 'react';
 import { useAppSelector } from 'redux/hook';
 import { IRootState } from 'redux/reducers';
 import classes from './styles.module.scss';
-import { AddressIcon, InfoIcon, PlaceholderImage, StarIcon } from 'assets';
+import { AddressIcon, CloseIcon, InfoIcon, PlaceholderImage, StarIcon } from 'assets';
 import { Button, Dialog, Skeleton, Tooltip } from '@mui/material';
 import CurrencyService from 'services/currency_service';
 import { ICompetitor } from 'interfaces/price';
@@ -76,6 +76,10 @@ const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
 
   const [hotelModal, setHotelModal] = useState<{ isOpen: boolean; data: IExtendedHotel }>({ isOpen: false, data: null });
 
+  const onCloseHotelModal = () => {
+    setHotelModal({ isOpen: false, data: null });
+  };
+
   return (
     <Fragment>
       <div className={classes.hotelList}>
@@ -112,7 +116,11 @@ const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
                             <div className={classes.divider} />
                             <div className={classes.rating}>{hotel.rating ?? 'N/A'}</div>
                             <div className={classes.divider} />
-                            <Button className={classes.bookButton} variant="contained">
+                            <Button
+                              className={classes.bookButton}
+                              variant="contained"
+                              onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => event.stopPropagation()}
+                            >
                               Book Now
                             </Button>
                           </Fragment>
@@ -178,7 +186,9 @@ const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
             ))}
       </div>
 
-      <Dialog className={classes.hotelModal} open={hotelModal?.isOpen} onClose={() => setHotelModal({ isOpen: false, data: null })}>
+      <Dialog className={classes.hotelModal} open={hotelModal?.isOpen} onClose={onCloseHotelModal} transitionDuration={{ enter: 200, exit: 30 }}>
+        <CloseIcon className={classes.closeIcon} onClick={onCloseHotelModal} />
+
         <div className={classes.image}>
           <img src={hotelModal?.data?.photo ?? PlaceholderImage} alt={hotelModal?.data?.name ?? 'N/A'} />
         </div>
@@ -232,37 +242,38 @@ const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
           </div>
         </div>
 
-        <div className={classes.hr} />
-
         {hotelModal?.data?.competitors && hotelModal?.data?.price ? (
-          <div className={classes.competitorList}>
-            {/* show in the competitor pricing list our rates and where we stand in the ordering of cheapest to most expensive */}
-            {Object.entries({ ...hotelModal?.data?.competitors, Ascenda: hotelModal?.data?.price })
-              ?.sort((a: [name: string, price: number], b: [name: string, price: number]) => {
-                if (a[1] > b[1]) {
-                  return 1;
-                } else if (a[1] < b[1]) {
-                  return -1;
-                } else {
-                  return 0;
-                }
-              })
-              ?.map(([name, price]: [name: string, price: number]) => {
-                return (
-                  <div key={`competitor-${name}`} className={classes.competitor}>
-                    <p className={classes.competitorName}>{name ?? 'N/A'}</p>
+          <Fragment>
+            <div className={classes.hr} />
+            <div className={classes.competitorList}>
+              {/* show in the competitor pricing list our rates and where we stand in the ordering of cheapest to most expensive */}
+              {Object.entries({ ...hotelModal?.data?.competitors, Ascenda: hotelModal?.data?.price })
+                ?.sort((a: [name: string, price: number], b: [name: string, price: number]) => {
+                  if (a[1] > b[1]) {
+                    return 1;
+                  } else if (a[1] < b[1]) {
+                    return -1;
+                  } else {
+                    return 0;
+                  }
+                })
+                ?.map(([name, price]: [name: string, price: number]) => {
+                  return (
+                    <div key={`competitor-${name}`} className={classes.competitor}>
+                      <p className={classes.competitorName}>{name ?? 'N/A'}</p>
 
-                    {name === 'Ascenda' && hotelModal?.data?.taxes_and_fees ? (
-                      <Tooltip title="This price is tax-inclusive." arrow>
-                        <p>{CurrencyService.formatPrice(information.currency, price)}*</p>
-                      </Tooltip>
-                    ) : (
-                      <p>{CurrencyService.formatPrice(information.currency, price)}</p>
-                    )}
-                  </div>
-                );
-              })}
-          </div>
+                      {name === 'Ascenda' && hotelModal?.data?.taxes_and_fees ? (
+                        <Tooltip title="This price is tax-inclusive." arrow>
+                          <p>{CurrencyService.formatPrice(information.currency, price)}*</p>
+                        </Tooltip>
+                      ) : (
+                        <p>{CurrencyService.formatPrice(information.currency, price)}</p>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+          </Fragment>
         ) : null}
       </Dialog>
     </Fragment>

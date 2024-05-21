@@ -8,3 +8,4 @@ export { default as PlaceholderImage } from './images/placeholder.png';
 export { ReactComponent as StarIcon } from './icons/star.svg';
 export { ReactComponent as AddressIcon } from './icons/address.svg';
 export { ReactComponent as InfoIcon } from './icons/info.svg';
+export { ReactComponent as CloseIcon } from './icons/close.svg';
