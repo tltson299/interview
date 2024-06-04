@@ -81,15 +81,17 @@ interface HomePageProps {}
 const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
   const dispatch = useAppDispatch();
 
-  const information = useAppSelector((state: IRootState) => state.information);
-
   const { currency }: IHomepageQuery = QueryString.parse(window?.location?.search);
+
+  const information = useAppSelector((state: IRootState) => state.information);
 
   const [hotelModal, setHotelModal] = useState<{ isOpen: boolean; data: IExtendedHotel }>({ isOpen: false, data: null });
 
   useEffect(() => {
     if (!information.isLoading && !information.hotels) {
-      CurrencyService.setCurrency(currency);
+      if (currency) {
+        CurrencyService.setCurrency(currency);
+      }
       dispatch(getInformationRequest({ ...information, currency }));
     }
   }, [information, currency]);

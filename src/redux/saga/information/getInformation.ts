@@ -11,13 +11,15 @@ import CurrencyService from 'services/currency_service';
 
 function* getInformationRequest(action: PayloadAction<IInformationState>) {
   try {
+    const currency = action.payload.currency ?? ECurrency.USD;
+
     // skeletons
     yield put(
       setInformation({
         isLoading: true,
         hotels: action.payload.hotels ?? [],
         extendedHotels: action.payload.extendedHotels ?? [],
-        currency: action.payload.currency ?? ECurrency.USD,
+        currency,
       }),
     );
 
@@ -28,8 +30,8 @@ function* getInformationRequest(action: PayloadAction<IInformationState>) {
     }
 
     // get hotel price list and round the numbers
-    const hotelPrices: IHotelPrice[] = yield call(ApiService.GET, ApiRoutes.prices.default.replace(':currency', action.payload.currency));
-    const roundedPrices = CurrencyService.roundHotelPrices(action.payload.currency, hotelPrices);
+    const hotelPrices: IHotelPrice[] = yield call(ApiService.GET, ApiRoutes.prices.default.replace(':currency', currency));
+    const roundedPrices = CurrencyService.roundHotelPrices(currency, hotelPrices);
 
     // combine hotel list and hotel price list
     // merge and exclude hotels which don't have details
@@ -62,7 +64,7 @@ function* getInformationRequest(action: PayloadAction<IInformationState>) {
         isLoading: false,
         hotels: hotels ?? [], // cache for next getInformationRequest()
         extendedHotels: results ?? [],
-        currency: action.payload.currency ?? ECurrency.USD,
+        currency,
       }),
     );
   } catch (error) {
