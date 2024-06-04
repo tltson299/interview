@@ -1,14 +1,16 @@
 import { IExtendedHotel } from 'interfaces/hotel';
-import { Fragment, memo, useState } from 'react';
-import { useAppSelector } from 'redux/hook';
+import { Fragment, memo, useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from 'redux/hook';
 import { IRootState } from 'redux/reducers';
 import classes from './styles.module.scss';
 import { AddressIcon, CloseIcon, InfoIcon, PlaceholderImage, StarIcon } from 'assets';
 import { Button, Dialog, Skeleton, Tooltip } from '@mui/material';
 import CurrencyService from 'services/currency_service';
 import { ICompetitor } from 'interfaces/price';
-import { EStar } from 'configs/enums';
+import { ECurrency, EStar } from 'configs/enums';
 import clsx from 'clsx';
+import QueryString from 'qs';
+import { getInformationRequest } from 'redux/reducers/information/actionTypes';
 
 const SKELETON_COUNT = 5;
 
@@ -70,12 +72,27 @@ const renderStars = (stars: EStar) => {
   }
 };
 
+interface IHomepageQuery {
+  currency?: ECurrency;
+}
+
 interface HomePageProps {}
 
 const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
+  const dispatch = useAppDispatch();
+
   const information = useAppSelector((state: IRootState) => state.information);
 
+  const { currency }: IHomepageQuery = QueryString.parse(window?.location?.search);
+
   const [hotelModal, setHotelModal] = useState<{ isOpen: boolean; data: IExtendedHotel }>({ isOpen: false, data: null });
+
+  useEffect(() => {
+    if (!information.isLoading && !information.hotels) {
+      CurrencyService.setCurrency(currency);
+      dispatch(getInformationRequest({ ...information, currency }));
+    }
+  }, [information, currency]);
 
   const onCloseHotelModal = () => {
     setHotelModal({ isOpen: false, data: null });
@@ -103,7 +120,10 @@ const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
                         {hotel.price != null ? (
                           <Fragment>
                             {hotel.taxes_and_fees ? (
-                              <Tooltip title="This price is tax-inclusive." arrow>
+                              <Tooltip
+                                title={`This price is tax-inclusive - Tax: ${CurrencyService.formatPrice(information.currency, hotel.taxes_and_fees.tax)}, Hotel Fees: ${CurrencyService.formatPrice(information.currency, hotel.taxes_and_fees.hotel_fees)}`}
+                                arrow
+                              >
                                 <div className={classes.price}>
                                   {CurrencyService.formatPrice(information.currency, hotel.price)}*{checkSaving(hotel.price, hotel.competitors)}
                                 </div>
@@ -164,9 +184,11 @@ const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
                               return (
                                 <div key={`competitor-${name}`} className={classes.competitor}>
                                   <p className={classes.competitorName}>{name ?? 'N/A'}</p>
-
                                   {name === 'Ascenda' && hotel.taxes_and_fees ? (
-                                    <Tooltip title="This price is tax-inclusive." arrow>
+                                    <Tooltip
+                                      title={`This price is tax-inclusive - Tax: ${CurrencyService.formatPrice(information.currency, hotel.taxes_and_fees.tax)}, Hotel Fees: ${CurrencyService.formatPrice(information.currency, hotel.taxes_and_fees.hotel_fees)}`}
+                                      arrow
+                                    >
                                       <p>{CurrencyService.formatPrice(information.currency, price)}*</p>
                                     </Tooltip>
                                   ) : (
@@ -202,7 +224,10 @@ const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
           {hotelModal?.data?.price != null ? (
             <Fragment>
               {hotelModal?.data?.taxes_and_fees ? (
-                <Tooltip title="This price is tax-inclusive." arrow>
+                <Tooltip
+                  title={`This price is tax-inclusive - Tax: ${CurrencyService.formatPrice(information.currency, hotelModal.data.taxes_and_fees.tax)}, Hotel Fees: ${CurrencyService.formatPrice(information.currency, hotelModal.data.taxes_and_fees.hotel_fees)}`}
+                  arrow
+                >
                   <div className={classes.price}>
                     {CurrencyService.formatPrice(information.currency, hotelModal?.data?.price)}*
                     {checkSaving(hotelModal?.data?.price, hotelModal?.data?.competitors)}
@@ -262,9 +287,11 @@ const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
                   return (
                     <div key={`competitor-${name}`} className={classes.competitor}>
                       <p className={classes.competitorName}>{name ?? 'N/A'}</p>
-
                       {name === 'Ascenda' && hotelModal?.data?.taxes_and_fees ? (
-                        <Tooltip title="This price is tax-inclusive." arrow>
+                        <Tooltip
+                          title={`This price is tax-inclusive - Tax: ${CurrencyService.formatPrice(information.currency, hotelModal.data.taxes_and_fees.tax)}, Hotel Fees: ${CurrencyService.formatPrice(information.currency, hotelModal.data.taxes_and_fees.hotel_fees)}`}
+                          arrow
+                        >
                           <p>{CurrencyService.formatPrice(information.currency, price)}*</p>
                         </Tooltip>
                       ) : (

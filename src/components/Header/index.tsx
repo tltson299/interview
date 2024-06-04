@@ -7,16 +7,17 @@ import { IRootState } from 'redux/reducers';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ECurrency } from 'configs/enums';
-import { getInformationRequest } from 'redux/reducers/information/actionTypes';
-import CurrencyService from 'services/currency_service';
 import { ICurrency } from 'interfaces/currency';
 import currencyList from 'configs/currencies';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AppRoutes from 'routers/routes';
+import { getInformationRequest } from 'redux/reducers/information/actionTypes';
+import CurrencyService from 'services/currency_service';
 
 interface HeaderProps {}
 
 const Header = memo((props: HeaderProps) => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const information = useAppSelector((state: IRootState) => state.information);
@@ -24,9 +25,10 @@ const Header = memo((props: HeaderProps) => {
   const onChangeCurrency = (event: SelectChangeEvent) => {
     const newCurrency = (event?.target?.value ?? ECurrency.USD) as ECurrency;
 
+    // navigate to new URL
+    navigate({ pathname: AppRoutes.public.home, search: `currency=${newCurrency}` });
     // save currency to local storage
     CurrencyService.setCurrency(newCurrency);
-
     // get new currency prices
     dispatch(getInformationRequest({ ...information, currency: newCurrency }));
   };
