@@ -73,7 +73,7 @@ const renderStars = (stars: EStar) => {
 };
 
 interface IHomepageQuery {
-  queryCurrency?: ECurrency;
+  currency?: ECurrency;
 }
 
 interface HomePageProps {}
@@ -81,21 +81,22 @@ interface HomePageProps {}
 const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
   const dispatch = useAppDispatch();
 
-  const { queryCurrency }: IHomepageQuery = QueryString.parse(window?.location?.search);
+  const { currency }: IHomepageQuery = QueryString.parse(window?.location?.search);
 
   const information = useAppSelector((state: IRootState) => state.information);
 
   const [hotelModal, setHotelModal] = useState<{ isOpen: boolean; data: IExtendedHotel }>({ isOpen: false, data: null });
 
   useEffect(() => {
-    const localCurrency = CurrencyService.getCurrency();
     if (!information.isLoading && !information.hotels) {
-      if (queryCurrency) {
-        CurrencyService.setCurrency(queryCurrency);
+      if (Object.values(ECurrency).includes(currency)) {
+        CurrencyService.setCurrency(currency);
+        dispatch(getInformationRequest({ ...information, currency }));
+      } else {
+        dispatch(getInformationRequest({ ...information, currency: CurrencyService.getCurrency() }));
       }
-      dispatch(getInformationRequest({ ...information, currency: queryCurrency ?? localCurrency }));
     }
-  }, [information, queryCurrency]);
+  }, [information, currency]);
 
   const onCloseHotelModal = () => {
     setHotelModal({ isOpen: false, data: null });
