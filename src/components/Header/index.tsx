@@ -16,7 +16,7 @@ import CurrencyService from 'services/currency_service';
 
 interface HeaderProps {}
 
-const Header = memo((props: HeaderProps) => {
+const Header: React.FC<HeaderProps> = memo((props: HeaderProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 

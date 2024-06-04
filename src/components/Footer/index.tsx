@@ -4,7 +4,7 @@ import { Container } from '@mui/material';
 
 interface FooterProps {}
 
-const Footer = memo((props: FooterProps) => {
+const Footer: React.FC<FooterProps> = memo((props: FooterProps) => {
   return (
     <div className={classes.footer}>
       <Container className={classes.container} maxWidth={false}>
