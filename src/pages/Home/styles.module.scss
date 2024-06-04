@@ -260,7 +260,7 @@
     }
     .address {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       gap: 8px;
       margin-bottom: 12px;
       > svg {
@@ -269,7 +269,7 @@
     }
     .description {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 8px;
       > svg {
         flex-shrink: 0;
