@@ -26,7 +26,7 @@ const Header: React.FC<HeaderProps> = memo((props: HeaderProps) => {
     const newCurrency = (event?.target?.value ?? ECurrency.USD) as ECurrency;
 
     // navigate to new URL
-    navigate({ pathname: AppRoutes.public.home, search: `&currency=${newCurrency}` });
+    navigate({ pathname: AppRoutes.public.home, search: `currency=${newCurrency}` });
     // save currency to local storage
     CurrencyService.setCurrency(newCurrency);
     // get new currency prices

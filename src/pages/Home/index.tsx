@@ -81,7 +81,7 @@ interface HomePageProps {}
 const HomePage: React.FC<HomePageProps> = memo((props: HomePageProps) => {
   const dispatch = useAppDispatch();
 
-  const { currency }: IHomepageQuery = QueryString.parse(window?.location?.search);
+  const { currency }: IHomepageQuery = QueryString.parse(window?.location?.search, { ignoreQueryPrefix: true });
 
   const information = useAppSelector((state: IRootState) => state.information);
 
