@@ -27,3 +27,8 @@ export interface IExtendedHotel {
     hotel_fees: number;
   };
 }
+
+export interface IHotelModal {
+  isOpen: boolean;
+  hotel: IExtendedHotel;
+}

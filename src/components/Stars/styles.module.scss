@@ -1,0 +1,9 @@
+.stars {
+  > svg {
+    width: 16px;
+    height: 16px;
+    > path {
+      fill: var(--secondary);
+    }
+  }
+}

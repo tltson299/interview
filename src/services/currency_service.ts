@@ -1,6 +1,6 @@
 import numeral from 'numeral';
 import { ECurrency } from 'configs/enums';
-import { IHotelPrice } from 'interfaces/price';
+import { ICompetitor, IHotelPrice } from 'interfaces/price';
 
 const nearestDollarsCountries = [ECurrency.USD, ECurrency.SGD, ECurrency.CNY];
 const nearest100DollarsCountries = [ECurrency.KRW];
@@ -70,11 +70,23 @@ const formatPrice = (currency: ECurrency, number: number) => {
   return `${getCurrencySymbol(currency)}${numeral(number).format('0,0')}`;
 };
 
+const calculateSaving = (currentPrice: number, competitors: ICompetitor) => {
+  if (competitors) {
+    const maxPrice = Math.max(...Object.values(competitors));
+    if (currentPrice < maxPrice) {
+      const saving = Math.round((1 - currentPrice / maxPrice) * 100);
+      return saving;
+    }
+  }
+  return null;
+};
+
 const CurrencyService = {
   getCurrency,
   setCurrency,
   roundHotelPrices,
   formatPrice,
+  calculateSaving,
 };
 
 export default CurrencyService;
